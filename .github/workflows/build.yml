@@ -25,7 +25,7 @@ jobs:
           echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/26.1.10909125" >> $GITHUB_ENV
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+          targets: aarch64-linux-android
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
@@ -35,16 +35,23 @@ jobs:
           mkdir -p src-tauri/icons
           convert -size 512x512 xc:#1a1a2e -alpha on -type TrueColorAlpha PNG32:src-tauri/icons/icon.png
       - run: npm install
+      - name: Setup keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > src-tauri/odfiz.keystore
       - name: Init Android project
         run: npx tauri android init
         env:
           NDK_HOME: ${{ env.NDK_HOME }}
           ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
-      - name: Build Android APK
+      - name: Build & Sign APK
         run: npx tauri android build --apk --target aarch64
         env:
           NDK_HOME: ${{ env.NDK_HOME }}
           ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+          TAURI_SIGNING_ANDROID_KEYSTORE: ${{ github.workspace }}/src-tauri/odfiz.keystore
+          TAURI_SIGNING_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          TAURI_SIGNING_ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          TAURI_SIGNING_ANDROID_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       - uses: actions/upload-artifact@v4
         with:
           name: apk-result
