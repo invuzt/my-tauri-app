@@ -35,9 +35,13 @@ jobs:
           mkdir -p src-tauri/icons
           convert -size 512x512 xc:#1a1a2e -alpha on -type TrueColorAlpha PNG32:src-tauri/icons/icon.png
       - run: npm install
-      - name: Setup keystore
+      - name: Generate keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > /tmp/odfiz.keystore
+          keytool -genkey -v -keystore /tmp/odfiz.keystore \
+            -alias odfiz -keyalg RSA -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Odfiz, OU=Dev, O=Odfiz, L=ID, S=ID, C=ID" \
+            -storepass odfiz123 -keypass odfiz123
       - name: Init Android project
         run: npx tauri android init
         env:
@@ -54,9 +58,9 @@ jobs:
           echo "Signing: $APK"
           $ANDROID_SDK_ROOT/build-tools/$(ls $ANDROID_SDK_ROOT/build-tools | tail -1)/apksigner sign \
             --ks /tmp/odfiz.keystore \
-            --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
-            --key-pass pass:${{ secrets.KEY_PASSWORD }} \
-            --ks-key-alias ${{ secrets.KEY_ALIAS }} \
+            --ks-pass pass:odfiz123 \
+            --key-pass pass:odfiz123 \
+            --ks-key-alias odfiz \
             --out app-signed.apk \
             "$APK"
       - uses: actions/upload-artifact@v4
