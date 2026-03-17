@@ -1,7 +1,7 @@
 [package]
-name = "odfiz-app"
+name = "cskru"
 version = "0.0.0"
-description = "Odfiz App"
+description = "Cakru App"
 authors = []
 edition = "2021"
 

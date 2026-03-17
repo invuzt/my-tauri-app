@@ -1,18 +1,26 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "odfiz-app",
+  "productName": "cakru",
   "version": "0.1.0",
-  "identifier": "com.odfiz.myapp",
+  "identifier": "com.odfiz.cakru",
   "build": {
     "frontendDist": "../src"
   },
   "app": {
     "withGlobalTauri": true,
-    "windows": [{"title": "Odfiz App", "width": 800, "height": 600}]
+    "windows": [{"title": "Cakru App", "width": 800, "height": 600}]
   },
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": []
+    "icon": [],
+    "android": {
+      "signingKey": {
+        "keystore": "/data/data/com.termux/files/home/cakru.keystore",
+        "keystorePassword": "$KEYSTORE_PASSWORD",
+        "keyAlias": "$KEY_ALIAS",
+        "keyPassword": "$KEY_PASSWORD"
+      }
+    }
   }
 }

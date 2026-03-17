@@ -1,5 +1,5 @@
 {
-  "name": "odfiz-app",
+  "name": "cakru",
   "version": "0.0.0",
   "scripts": {
     "tauri": "tauri"
